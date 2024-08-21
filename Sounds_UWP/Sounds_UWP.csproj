@@ -124,7 +124,12 @@
     </Compile>
     <Compile Include="Model\SoundModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\NavigationService.cs" />
     <Compile Include="ViewModel\MainPageViewModel.cs" />
+    <Compile Include="ViewModel\SoundDetailPageViewModel.cs" />
+    <Compile Include="View\SoundDetailPage.xaml.cs">
+      <DependentUpon>SoundDetailPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -136,9 +141,11 @@
     <Content Include="Assets\443_10_1696353179.jpg" />
     <Content Include="Assets\5539177-middle.png" />
     <Content Include="Assets\8400_1_1703597400.jpeg" />
+    <Content Include="Assets\back.png" />
     <Content Include="Assets\expo-go-app.png" />
     <Content Include="Assets\IBM_Simon_Personal_Communicator.png" />
     <Content Include="Assets\IMG_0575.jpg" />
+    <Content Include="Assets\vliublennye-svidanie-siluety-paren-i-devushka-bereg-more-zve.jpg" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -156,6 +163,10 @@
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\SoundDetailPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -180,9 +191,7 @@
       <Version>2.8.6</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="View\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

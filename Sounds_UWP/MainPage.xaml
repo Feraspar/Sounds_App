@@ -21,27 +21,30 @@
 
     <Page.Resources>
         <DataTemplate x:Key="ListViewItem">
-            <StackPanel Width="200" Height="450" Margin="10">
-                <Image Source="{Binding BackgroundUri}"/>
-                <TextBlock Text="{Binding Name}" FontSize="45" Margin="10"/>
-            </StackPanel>
+            <Grid Width="400" Height="200" Margin="10">
+                <Border CornerRadius="15" Opacity="1">
+                    <Image Source="{Binding BackgroundUri}" Stretch="Fill"/>
+                </Border>
+                <Border Height="50" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Background="Black" Opacity="0.65" CornerRadius="0, 0, 15, 15"/>
+                <TextBlock Text="{Binding Name}" FontSize="35" VerticalAlignment="Bottom" Foreground="AliceBlue" HorizontalAlignment="Center"/>
+            </Grid>
         </DataTemplate>
     </Page.Resources>
     
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="80"/>
+            <RowDefinition Height="70"/>
             <RowDefinition />
         </Grid.RowDefinitions>
 
         <Grid>
-            <Border BorderBrush="White" BorderThickness="0, 0, 0, 2">
-                <TextBlock Text="Звуки" FontSize="60" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0, 0, 0, 5"/>
+            <Border BorderBrush="White" BorderThickness="0, 0, 0, 1.52">
+                <TextBlock Text="Звуки" FontSize="50" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0, 0, 0, 5"/>
             </Border>
         </Grid>
 
         <Grid Grid.Row="1">
-            <ListView ItemsSource="{Binding Sounds}" ItemTemplate="{StaticResource ListViewItem}">
+            <ListView ItemsSource="{Binding Sounds}" ItemTemplate="{StaticResource ListViewItem}" SelectedItem="{Binding SelectedSound, Mode=TwoWay}" IsItemClickEnabled="True">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <ItemsWrapGrid Orientation="Horizontal" HorizontalAlignment="Center"/>
