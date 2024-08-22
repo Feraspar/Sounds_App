@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Sounds_UWP.Model;
+using DataLibrary.Data;
+using DataLibrary.Model;
 using Sounds_UWP.Services;
 using Sounds_UWP.View;
 using System;
@@ -41,48 +42,81 @@ namespace Sounds_UWP.ViewModel
             NavigateToSoundCommand = new RelayCommand<SoundModel>(NavigateToSound);
             _localFolder = ApplicationData.Current.LocalFolder;
             _ = InitializeSounds();
+            //LoadSounds();
         }
 
         private async Task InitializeSounds()
         {
-            List<string> images = new List<string>()
-            {
-                "expo-go-app.png",
-                "443_10_1696353179.jpg",
-                "123E231.png",
-                "5539177-middle.png",
-                "8400_1_1703597400.jpeg",
-                "IBM_Simon_Personal_Communicator.png",
-                "IMG_0575.jpg",
-                "expo-go-app.png",
-                "443_10_1696353179.jpg",
-                "123E231.png",
-                "5539177-middle.png",
-                "8400_1_1703597400.jpeg",
-                "IBM_Simon_Personal_Communicator.png",
-                "IMG_0575.jpg",
-                "5539177-middle.png",
-                "vliublennye-svidanie-siluety-paren-i-devushka-bereg-more-zve.jpg"
-            };
+            //using (DatabaseContext context = App.DatabaseContext)
+            //{
+            //    var sounds = context.MainSounds.ToList();
 
-            foreach (var imageName in images)
+            //    foreach (var soundName in sounds)
+            //    {
+            //        try
+            //        {
+            //            StorageFile imageFile = await _localFolder.GetFileAsync(soundName.BackgroundUri);
+            //            StorageFile soundFile = await _localFolder.GetFileAsync(soundName.SoundUri);
+            //        }
+            //        catch (FileNotFoundException)
+            //        {
+            //            StorageFile imageSourceFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///Assets/img/{soundName.BackgroundUri}"));
+            //            await imageSourceFile.CopyAsync(_localFolder);
+
+            //            StorageFile soundSourceFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///Assets/sounds/{soundName.SoundUri}"));
+            //            await soundSourceFile.CopyAsync(_localFolder);
+            //        }
+            //    }
+
+            //    foreach (var sound in sounds)
+            //    {
+            //        StorageFile imageFile = await _localFolder.GetFileAsync(sound.BackgroundUri);
+            //        StorageFile soundFile = await _localFolder.GetFileAsync(sound.SoundUri);
+
+            //        var newSound = new SoundModel
+            //        {
+            //            Name = sound.Name,
+            //            BackgroundUri = imageFile.Path,
+            //            SoundUri = soundFile.Path
+            //        };
+
+            //        Sounds.Add(newSound);
+            //    }
+            //}
+
+            DatabaseContext context = App.DatabaseContext;
+            var sounds = context.MainSounds.ToList();
+
+            foreach (var soundName in sounds)
             {
                 try
                 {
-                    StorageFile imageFile = await _localFolder.GetFileAsync(imageName);
+                    StorageFile imageFile = await _localFolder.GetFileAsync(soundName.BackgroundUri);
+                    StorageFile soundFile = await _localFolder.GetFileAsync(soundName.SoundUri);
                 }
                 catch (FileNotFoundException)
                 {
-                    StorageFile sourceFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///Assets/{imageName}"));
-                    await sourceFile.CopyAsync(_localFolder);
+                    StorageFile imageSourceFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///Assets/img/{soundName.BackgroundUri}"));
+                    await imageSourceFile.CopyAsync(_localFolder);
+
+                    StorageFile soundSourceFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///Assets/sounds/{soundName.SoundUri}"));
+                    await soundSourceFile.CopyAsync(_localFolder);
                 }
             }
 
-            for (int i = 0; i < images.Count; i++)
+            foreach (var sound in sounds)
             {
-                StorageFile imageFile = await _localFolder.GetFileAsync(images[i]);
+                StorageFile imageFile = await _localFolder.GetFileAsync(sound.BackgroundUri);
+                StorageFile soundFile = await _localFolder.GetFileAsync(sound.SoundUri);
 
-                Sounds.Add(new SoundModel { Name = $"Звук {i + 1}", BackgroundUri = imageFile.Path });
+                var newSound = new SoundModel
+                {
+                    Name = sound.Name,
+                    BackgroundUri = imageFile.Path,
+                    SoundUri = soundFile.Path
+                };
+
+                Sounds.Add(newSound);
             }
         }
 

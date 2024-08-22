@@ -119,12 +119,10 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Converters\ScaleConverter.cs" />
-    <Compile Include="Converters\ScaleParameters.cs" />
+    <Compile Include="Converters\ButtonImageConverter.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model\SoundModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="ViewModel\MainPageViewModel.cs" />
@@ -139,19 +137,41 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\123E231.png" />
-    <Content Include="Assets\443_10_1696353179.jpg" />
-    <Content Include="Assets\5539177-middle.png" />
-    <Content Include="Assets\8400_1_1703597400.jpeg" />
     <Content Include="Assets\back.png" />
-    <Content Include="Assets\expo-go-app.png" />
-    <Content Include="Assets\IBM_Simon_Personal_Communicator.png" />
-    <Content Include="Assets\IMG_0575.jpg" />
+    <Content Include="Assets\img\Бриз.jpg" />
+    <Content Include="Assets\img\Волны и лодка.jpg" />
+    <Content Include="Assets\img\Волны с ветром.jpg" />
+    <Content Include="Assets\img\Дождь в лесу.jpg" />
+    <Content Include="Assets\img\Дождь у озера.jpg" />
+    <Content Include="Assets\img\Звук дождя.jpg" />
+    <Content Include="Assets\img\Капли дождя.jpg" />
+    <Content Include="Assets\img\Лава.jpg" />
+    <Content Include="Assets\img\Метель.jpg" />
+    <Content Include="Assets\img\Ночная сова.jpg" />
+    <Content Include="Assets\img\Песок.jpg" />
+    <Content Include="Assets\img\Песчаная буря.jpg" />
+    <Content Include="Assets\img\Побережье.jpg" />
+    <Content Include="Assets\img\Потрескивающий огонь.jpg" />
+    <Content Include="Assets\img\Тропические волны.jpg" />
     <Content Include="Assets\pause.png" />
     <Content Include="Assets\play.png" />
     <Content Include="Assets\plus.png" />
+    <Content Include="Assets\sounds\bez-imeni-dozhd-napolnjaet-koryto.mp3" />
+    <Content Include="Assets\sounds\bez-imeni-poberezhe.mp3" />
+    <Content Include="Assets\sounds\bez-imeni-shum-dozhdja.mp3" />
+    <Content Include="Assets\sounds\lava.mp3" />
+    <Content Include="Assets\sounds\metel.mp3" />
+    <Content Include="Assets\sounds\pes.burya.mp3" />
+    <Content Include="Assets\sounds\pesok.mp3" />
+    <Content Include="Assets\sounds\priroda-dozhd-v-lesu.mp3" />
+    <Content Include="Assets\sounds\priroda-nochnye-zvuki-sovy.mp3" />
+    <Content Include="Assets\sounds\priroda-potreskivajushhijj-ogon.mp3" />
+    <Content Include="Assets\sounds\priroda-shum-voln-i-vetra.mp3" />
+    <Content Include="Assets\sounds\priroda-tropicheskie-volny.mp3" />
+    <Content Include="Assets\sounds\priroda-tropicheskijj-briz.mp3" />
+    <Content Include="Assets\sounds\priroda-zvuk-dozhdja.mp3" />
+    <Content Include="Assets\sounds\wooden-boat-floating-on-lake-waves_gjiafreo.mp3" />
     <Content Include="Assets\timer.png" />
-    <Content Include="Assets\vliublennye-svidanie-siluety-paren-i-devushka-bereg-more-zve.jpg" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -198,6 +218,17 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Content Include="Assets\Sounds.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DataLibrary\DataLibrary.csproj">
+      <Project>{2c41de82-f9a9-4e6f-b346-cd79090b14e2}</Project>
+      <Name>DataLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

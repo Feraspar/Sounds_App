@@ -26,7 +26,7 @@
                     <Image Source="{Binding BackgroundUri}" Stretch="Fill"/>
                 </Border>
                 <Border Height="50" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Background="Black" Opacity="0.65" CornerRadius="0, 0, 15, 15"/>
-                <TextBlock Text="{Binding Name}" FontSize="35" VerticalAlignment="Bottom" Foreground="AliceBlue" HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding Name}" FontSize="25" VerticalAlignment="Bottom" Foreground="AliceBlue" HorizontalAlignment="Center"/>
             </Grid>
         </DataTemplate>
     </Page.Resources>

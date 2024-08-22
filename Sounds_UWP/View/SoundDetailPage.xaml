@@ -37,6 +37,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <converter:ButtonImageConverter x:Key="ButtonImageConverter" />
     </Page.Resources>
 
     <Grid>
@@ -73,9 +75,9 @@
 
             <Viewbox Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Uniform" MaxWidth="1000">
                 <Grid Width="700">
-                    <Button Width="70" Height="70" HorizontalAlignment="Left" Margin="0, 20, 0, 0" BorderBrush="{x:Null}" Style="{StaticResource NoHoverEffectButtonStyle}">
+                    <Button Command="{Binding PlayPauseCommand}" Width="70" Height="70" HorizontalAlignment="Left" Margin="0, 20, 0, 0" BorderBrush="{x:Null}" Style="{StaticResource NoHoverEffectButtonStyle}">
                         <Button.Background>
-                            <ImageBrush ImageSource="/Assets/play.png"/>
+                            <ImageBrush ImageSource="{Binding IsPlaying, Converter={StaticResource ButtonImageConverter}}"/>
                         </Button.Background>
                     </Button>
                     <Button Width="70" Height="70" HorizontalAlignment="Right" Margin="0, 20, 0, 0" BorderBrush="{x:Null}" Style="{StaticResource NoHoverEffectButtonStyle}">
