@@ -119,6 +119,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\ScaleConverter.cs" />
+    <Compile Include="Converters\ScaleParameters.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -145,6 +147,10 @@
     <Content Include="Assets\expo-go-app.png" />
     <Content Include="Assets\IBM_Simon_Personal_Communicator.png" />
     <Content Include="Assets\IMG_0575.jpg" />
+    <Content Include="Assets\pause.png" />
+    <Content Include="Assets\play.png" />
+    <Content Include="Assets\plus.png" />
+    <Content Include="Assets\timer.png" />
     <Content Include="Assets\vliublennye-svidanie-siluety-paren-i-devushka-bereg-more-zve.jpg" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
