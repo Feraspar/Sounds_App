@@ -106,17 +106,20 @@ namespace Sounds_UWP.ViewModel
 
             foreach (var sound in sounds)
             {
-                StorageFile imageFile = await _localFolder.GetFileAsync(sound.BackgroundUri);
-                StorageFile soundFile = await _localFolder.GetFileAsync(sound.SoundUri);
-
-                var newSound = new SoundModel
+                if (sound.Category == "background")
                 {
-                    Name = sound.Name,
-                    BackgroundUri = imageFile.Path,
-                    SoundUri = soundFile.Path
-                };
+                    StorageFile imageFile = await _localFolder.GetFileAsync(sound.BackgroundUri);
+                    StorageFile soundFile = await _localFolder.GetFileAsync(sound.SoundUri);
 
-                Sounds.Add(newSound);
+                    var newSound = new SoundModel
+                    {
+                        Name = sound.Name,
+                        BackgroundUri = imageFile.Path,
+                        SoundUri = soundFile.Path
+                    };
+
+                    Sounds.Add(newSound);
+                }
             }
         }
 

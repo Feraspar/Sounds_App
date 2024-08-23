@@ -49,10 +49,23 @@ namespace DataLibrary.Model
                 }
             }
         }
+        public string Category
+        {
+            get => _category;
+            set
+            {
+                if (_category != value)
+                {
+                    _category = value;
+                    OnPropertyChanged(nameof(Category));
+                }
+            }
+        }
 
         private string _name;
         private string _backgroundUri;
         private string _soundUri;
+        private string _category;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
