@@ -119,6 +119,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\ButtonImageConverter.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -138,6 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\back.png" />
+    <Content Include="Assets\cancel.png" />
     <Content Include="Assets\img\Бриз.jpg" />
     <Content Include="Assets\img\Волны и лодка.jpg" />
     <Content Include="Assets\img\Волны с ветром.jpg" />

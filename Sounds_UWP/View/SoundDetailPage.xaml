@@ -39,6 +39,7 @@
         </Style>
 
         <converter:ButtonImageConverter x:Key="ButtonImageConverter" />
+        <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Page.Resources>
 
     <Grid>
@@ -80,12 +81,36 @@
                             <ImageBrush ImageSource="{Binding IsPlaying, Converter={StaticResource ButtonImageConverter}}"/>
                         </Button.Background>
                     </Button>
-                    <Button Width="70" Height="70" HorizontalAlignment="Right" Margin="0, 20, 0, 0" BorderBrush="{x:Null}" Style="{StaticResource NoHoverEffectButtonStyle}">
+                    <Button Command="{Binding ShowTimerPanelCommand}" Width="70" Height="70" HorizontalAlignment="Right" Margin="0, 20, 0, 0" BorderBrush="{x:Null}" Style="{StaticResource NoHoverEffectButtonStyle}" Visibility="{Binding IsTimerButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Button.Background>
                             <ImageBrush ImageSource="/Assets/timer.png"/>
                         </Button.Background>
                     </Button>
+                    <TextBlock Text="{Binding TextCountdown}" HorizontalAlignment="Right" FontSize="50" VerticalAlignment="Center" Foreground="AliceBlue" Visibility="{Binding IsTextCountdownVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                 </Grid>
+            </Viewbox>
+
+            <Viewbox Grid.ColumnSpan="2" Grid.RowSpan="3" MaxWidth="1600">
+                <StackPanel Width="500" Height="300" Margin="30" HorizontalAlignment="Center" Background="AliceBlue" CornerRadius="10" Visibility="{Binding IsPanelTimerVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Border BorderBrush="Black" BorderThickness="0, 0, 0, 0.5">
+                        <TextBlock Text="Установить продолжительность таймера" HorizontalAlignment="Center"/>
+                    </Border>
+                    <Button Content="5 минут" Command="{Binding SetTimerCommand}" CommandParameter="5" Width="200" Height="30" HorizontalAlignment="Center" BorderBrush="{x:Null}"/>
+                    <Button Content="10 минут" Command="{Binding SetTimerCommand}" CommandParameter="10" Width="200" Height="30" HorizontalAlignment="Center" BorderBrush="{x:Null}"/>
+                    <Button Content="15 минут" Command="{Binding SetTimerCommand}" CommandParameter="15" Width="200" Height="30" HorizontalAlignment="Center" BorderBrush="{x:Null}"/>
+                    <Button Content="20 минут" Command="{Binding SetTimerCommand}" CommandParameter="20" Width="200" Height="30" HorizontalAlignment="Center" BorderBrush="{x:Null}"/>
+                    <Button Content="30 минут" Command="{Binding SetTimerCommand}" CommandParameter="30" Width="200" Height="30" HorizontalAlignment="Center" BorderBrush="{x:Null}"/>
+                    <Button Content="40 минут" Command="{Binding SetTimerCommand}" CommandParameter="40" Width="200" Height="30" HorizontalAlignment="Center" BorderBrush="{x:Null}"/>
+                    <Button Content="50 минут" Command="{Binding SetTimerCommand}" CommandParameter="50" Width="200" Height="30" HorizontalAlignment="Center" BorderBrush="{x:Null}"/>
+                    <Button Content="1 час" Command="{Binding SetTimerCommand}" CommandParameter="60" Width="200" Height="30" HorizontalAlignment="Center" BorderBrush="{x:Null}"/>
+                    <Border BorderBrush="Black" BorderThickness="0, 1, 0, 0" Height="39">
+                        <Button Command="{Binding ShowTimerPanelCommand}" Width="30" Height="30" HorizontalAlignment="Center" BorderBrush="{x:Null}" Style="{StaticResource NoHoverEffectButtonStyle}">
+                            <Button.Background>
+                                <ImageBrush ImageSource="/Assets/cancel.png"/>
+                            </Button.Background>
+                        </Button>
+                    </Border>
+                </StackPanel>
             </Viewbox>
         </Grid>
     </Grid>
