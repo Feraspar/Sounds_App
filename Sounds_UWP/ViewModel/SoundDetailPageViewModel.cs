@@ -1,16 +1,23 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DataLibrary.Data;
 using DataLibrary.Model;
 using Sounds_UWP.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Media.Core;
 using Windows.Media.Playback;
+using Windows.Storage;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls.Maps;
+using Windows.UI.Xaml.Data;
 
 namespace Sounds_UWP.ViewModel
 {
@@ -21,6 +28,13 @@ namespace Sounds_UWP.ViewModel
         public ICommand PlayPauseCommand { get; private set; }
         public ICommand ShowTimerPanelCommand { get; private set; }
         public ICommand SetTimerCommand { get; private set; }
+        public ICommand ShowMelodiesPanelCommand { get; private set; }
+        public ICommand AddExtraMelodyCommand {  get; private set; }
+        public ObservableCollection<SoundModel> AnimalsSounds { get; private set; }
+        public ObservableCollection<SoundModel> InstrumentalSounds { get; private set; }
+        public ObservableCollection<SoundModel> NatureSounds { get; private set; }
+        public ObservableCollection<SoundModel> ExtraSounds { get; private set; }
+
 
         public bool IsPlaying
         {
@@ -47,9 +61,21 @@ namespace Sounds_UWP.ViewModel
             get => _textCountdown;
             set => SetProperty(ref _textCountdown, value);
         }
+        public bool IsPanelMelodiesVisible
+        {
+            get => _isPanelMelodiesVisible;
+            set => SetProperty(ref _isPanelMelodiesVisible, value);
+        }
+        public bool IsAddButtonVisible
+        {
+            get => _isAddButtonVisible;
+            set => SetProperty(ref _isAddButtonVisible, value);
+        }
 
-        private MediaPlayer _player;
+        private MediaPlayer _playerBack;
+        private List<MediaPlayer> _players;
         private bool _isPlaying;
+        private int _extraSongsCounter;
 
         private DispatcherTimer _timer;
         private TimeSpan _timeSpan;
@@ -59,19 +85,40 @@ namespace Sounds_UWP.ViewModel
         private bool _isTextCountdownVisible;
         private string _textCountdown;
 
+        private bool _isPanelMelodiesVisible;
+        private bool _isAddButtonVisible;
+
+        private StorageFolder _localFolder;
+
         public SoundDetailPageViewModel(SoundModel selectedSound)
         {
             SelectedSound = selectedSound;
+            _extraSongsCounter = 0;
+
             NavigateToBackCommand = new RelayCommand(NavigateToBack);
             PlayPauseCommand = new RelayCommand(PlayPause);
             ShowTimerPanelCommand = new RelayCommand(ShowTimerPanel);
             SetTimerCommand = new RelayCommand<object>(SetTimer);
+            ShowMelodiesPanelCommand = new RelayCommand(ShowMelodiesPanel);
+            AddExtraMelodyCommand = new RelayCommand<SoundModel>(AddExtraMelody);
+
+            AnimalsSounds = new ObservableCollection<SoundModel>();
+            InstrumentalSounds = new ObservableCollection<SoundModel>();
+            NatureSounds = new ObservableCollection<SoundModel>();
+            _players = new List<MediaPlayer>();
+            ExtraSounds = new ObservableCollection<SoundModel>();
 
             IsTimerButtonVisible = true;
             IsPanelTimerVisible = false;
             IsTextCountdownVisible = false;
 
-            InitializeMediaPlayer();
+            IsPanelMelodiesVisible = false;
+            IsAddButtonVisible = true;
+
+            _localFolder = ApplicationData.Current.LocalFolder;
+
+            InitializeMediaPlayer(_playerBack, SelectedSound.SoundUri);
+            _ = InitializeMelodies();
         }
 
         private void NavigateToBack()
@@ -82,30 +129,96 @@ namespace Sounds_UWP.ViewModel
         }
         private void PlayPause()
         {
-            if (_isPlaying)
+            foreach (var player in _players)
             {
-                _player.Pause();
+                if (_isPlaying)
+                {
+                    player.Pause();
+                }
+                else
+                {
+                    player.Play();
+                }
             }
-            else
-            {
-                _player.Play();
-            }
+            
             IsPlaying = !IsPlaying;
         }
 
-        private void InitializeMediaPlayer()
+        private void InitializeMediaPlayer(MediaPlayer player, string uri)
         {
-            _player = new MediaPlayer();
-            _player.Source = MediaSource.CreateFromUri(new Uri(SelectedSound.SoundUri));
-            _player.IsLoopingEnabled = true;
+            player = new MediaPlayer();
+            player.Source = MediaSource.CreateFromUri(new Uri(uri));
+            player.IsLoopingEnabled = true;
             IsPlaying = true;
-            _player.Play();
+            player.Play();
+            _players.Add(player);
+        }
+
+        private void AddExtraMelody(SoundModel sound)
+        {
+            _extraSongsCounter++;
+            if (_extraSongsCounter <= 3)
+            {
+                _players.Add(new MediaPlayer());
+                InitializeMediaPlayer(_players[_players.Count - 1], sound.SoundUri);
+                IsPanelMelodiesVisible = !IsPanelMelodiesVisible;
+                sound.IsEnabled = false;
+                ExtraSounds.Add(sound);
+            }
+        }
+
+        private async Task InitializeMelodies()
+        {
+            DatabaseContext context = App.DatabaseContext;
+            var sounds = context.MainSounds.Where(s => s.Category == "Animals" || s.Category == "Instrumental" || s.Category == "Nature").ToList();
+
+            foreach (var sound in sounds)
+            {
+                StorageFile imageFile = await GetOrCopyFile(sound.BackgroundUri, "img");
+                StorageFile soundFile = await GetOrCopyFile(sound.SoundUri, "sounds");
+
+                SoundModel newSound = new SoundModel
+                {
+                    Name = sound.Name,
+                    BackgroundUri = imageFile.Path,
+                    SoundUri = soundFile.Path,
+                    Category = sound.Category,
+                    IsEnabled = true
+                };
+
+                if (sound.Category == "Animals")
+                    AnimalsSounds.Add(newSound);
+
+                else if (sound.Category == "Instrumental")
+                    InstrumentalSounds.Add(newSound);
+
+                else if (sound.Category == "Nature")
+                    NatureSounds.Add(newSound);
+            }
+        }
+
+        private async Task<StorageFile> GetOrCopyFile(string uri, string folder)
+        {
+            try
+            {
+                return await _localFolder.GetFileAsync(uri);
+            }
+            catch (FileNotFoundException)
+            {
+                StorageFile sourceFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///Assets/{folder}/{uri}"));
+                await sourceFile.CopyAsync(_localFolder);
+                return sourceFile;
+            }
         }
 
         private void PlayerStop()
         {
-            _player.Pause();
-            _player.PlaybackSession.Position = TimeSpan.Zero;
+            foreach (var player  in _players)
+            {
+                player.Pause();
+                player.PlaybackSession.Position = TimeSpan.Zero;
+            }
+            
             IsPlaying = false;
         }
 
@@ -143,6 +256,14 @@ namespace Sounds_UWP.ViewModel
                 IsTextCountdownVisible = !IsTextCountdownVisible;
                 IsTimerButtonVisible = !IsTimerButtonVisible;
             }
+        }
+        private void ShowMelodiesPanel()
+        {
+            if (_extraSongsCounter == 2)
+            {
+                IsAddButtonVisible = !IsAddButtonVisible;
+            }
+            IsPanelMelodiesVisible = !IsPanelMelodiesVisible;
         }
     }
 }

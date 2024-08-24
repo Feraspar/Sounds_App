@@ -62,10 +62,24 @@ namespace DataLibrary.Model
             }
         }
 
+        public bool IsEnabled
+        {
+            get => _isEnabled;
+            set
+            {
+                if (_isEnabled != value)
+                {
+                    _isEnabled = value;
+                    OnPropertyChanged(nameof(IsEnabled));
+                }
+            }
+        }
+
         private string _name;
         private string _backgroundUri;
         private string _soundUri;
         private string _category;
+        private bool _isEnabled;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
