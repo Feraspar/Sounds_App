@@ -8,6 +8,9 @@ using Windows.UI.Xaml.Controls;
 
 namespace Sounds_UWP.Converters
 {
+    /// <summary>
+    /// Класс для более тонкой настройки TemplateSelector. В данном случае нужен для смены шаблона для первого элемента коллекции
+    /// </summary>
     public class ItemTemplateSelector : DataTemplateSelector
     {
         public DataTemplate FirstItemTemplate { get; set; }

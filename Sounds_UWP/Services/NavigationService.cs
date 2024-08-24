@@ -7,6 +7,9 @@ using Windows.UI.Xaml.Controls;
 
 namespace Sounds_UWP.Services
 {
+    /// <summary>
+    /// Сервис для навигации далее по странице и назад
+    /// </summary>
     public class NavigationService
     {
         private Frame GetFrame()

@@ -9,6 +9,9 @@ using Windows.Media.Playback;
 
 namespace Sounds_UWP.Model
 {
+    /// <summary>
+    /// Модель для управления громкостью звуков
+    /// </summary>
     public class SoundVolumeModel : INotifyPropertyChanged
     {
         public SoundVolumeModel(SoundModel soundModel)

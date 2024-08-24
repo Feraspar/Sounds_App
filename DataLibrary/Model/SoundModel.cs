@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace DataLibrary.Model
 {
+    /// <summary>
+    /// Базовая модель для всех звуков
+    /// </summary>
     public class SoundModel : INotifyPropertyChanged
     {
         [Key]
