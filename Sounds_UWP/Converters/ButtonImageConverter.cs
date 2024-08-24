@@ -10,6 +10,9 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace Sounds_UWP.Converters
 {
+    /// <summary>
+    /// Конвертер для смены изображения в зависимости от состояния
+    /// </summary>
     public class ButtonImageConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)

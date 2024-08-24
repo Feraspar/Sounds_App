@@ -22,6 +22,9 @@ using Windows.UI.Xaml.Data;
 
 namespace Sounds_UWP.ViewModel
 {
+    /// <summary>
+    /// ViewModel для страницы с фоновой музыкой
+    /// </summary>
     public class SoundDetailPageViewModel : ObservableObject
     {
         public SoundModel SelectedSound { get; set; }
@@ -81,7 +84,6 @@ namespace Sounds_UWP.ViewModel
             set => SetProperty(ref _isPanelVolumeVisible, value);
         }
 
-        private MediaPlayer _playerBack;
         private bool _isPlaying;
         private int _extraSongsCounter;
 
@@ -118,7 +120,7 @@ namespace Sounds_UWP.ViewModel
             NatureSounds = new ObservableCollection<SoundModel>();
             ExtraSounds = new ObservableCollection<SoundModel>();
 
-            var soundVolumeModel = new SoundVolumeModel(SelectedSound);
+            SoundVolumeModel soundVolumeModel = new SoundVolumeModel(SelectedSound);
             BackAndExtraSounds = new ObservableCollection<SoundVolumeModel>()
             {
                 soundVolumeModel
@@ -137,13 +139,13 @@ namespace Sounds_UWP.ViewModel
             _ = InitializeMelodies();
         }
 
-        private void NavigateToBack()
+        private void NavigateToBack()   // Навигация
         {
             NavigationService navigationService = new NavigationService();
             navigationService.NavigateToBack();
             PlayerStop();
         }
-        private void PlayPause()
+        private void PlayPause()    // Логика старта/паузы
         {
             foreach (var soundVolumeModel in BackAndExtraSounds)
             {
@@ -160,7 +162,7 @@ namespace Sounds_UWP.ViewModel
             IsPlaying = !IsPlaying;
         }
 
-        private void InitializeMediaPlayer(SoundVolumeModel soundVolumeModel, string uri)
+        private void InitializeMediaPlayer(SoundVolumeModel soundVolumeModel, string uri)   // Установка звука в плеер
         {
             MediaPlayer player = soundVolumeModel.MediaPlayer;
             player.Source = MediaSource.CreateFromUri(new Uri(uri));
@@ -170,7 +172,7 @@ namespace Sounds_UWP.ViewModel
             soundVolumeModel.Volume = 5;
         }
 
-        private void AddExtraMelody(SoundModel sound)
+        private void AddExtraMelody(SoundModel sound)   // Добавление доп. звука
         {
             _extraSongsCounter++;
             if (_extraSongsCounter <= 3)
@@ -184,7 +186,7 @@ namespace Sounds_UWP.ViewModel
             }
         }
 
-        private async Task InitializeMelodies()
+        private async Task InitializeMelodies() // Загрузка звуков из БД
         {
             DatabaseContext context = App.DatabaseContext;
             var sounds = context.MainSounds.Where(s => s.Category == "Animals" || s.Category == "Instrumental" || s.Category == "Nature").ToList();
@@ -240,7 +242,7 @@ namespace Sounds_UWP.ViewModel
             IsPlaying = false;
         }
 
-        private void DeleteSoundFromPlayer(SoundVolumeModel soundVolumeModel)
+        private void DeleteSoundFromPlayer(SoundVolumeModel soundVolumeModel)   // Удаление звука из плеера
         {
             soundVolumeModel.MediaPlayer.Pause();
             soundVolumeModel.MediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
@@ -252,7 +254,7 @@ namespace Sounds_UWP.ViewModel
             IsPanelTimerVisible = !IsPanelTimerVisible;
         }
 
-        private void SetTimer(object parameter)
+        private void SetTimer(object parameter) // Назнчение таймера
         {
             int minutes = Convert.ToInt32(parameter);
             _timeSpan = TimeSpan.FromMinutes(minutes);
@@ -295,7 +297,7 @@ namespace Sounds_UWP.ViewModel
             IsPanelVolumeVisible = !IsPanelVolumeVisible;
         }
 
-        private void DeleteSound(SoundVolumeModel soundVolumeModel)
+        private void DeleteSound(SoundVolumeModel soundVolumeModel) // Удаление доп.звука из коллекции
         {
             _extraSongsCounter--;
             if (IsAddButtonVisible == false)

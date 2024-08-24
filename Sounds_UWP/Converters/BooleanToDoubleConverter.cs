@@ -8,6 +8,9 @@ using Windows.UI.Xaml.Data;
 
 namespace Sounds_UWP.Converters
 {
+    /// <summary>
+    /// Конвертер для перевода булевого значения в значение видимости компонента 
+    /// </summary>
     public class BooleanToDoubleConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)

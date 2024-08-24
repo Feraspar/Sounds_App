@@ -42,7 +42,6 @@ namespace Sounds_UWP.ViewModel
             NavigateToSoundCommand = new RelayCommand<SoundModel>(NavigateToSound);
             _localFolder = ApplicationData.Current.LocalFolder;
             _ = InitializeSounds();
-            //LoadSounds();
         }
 
         private async Task InitializeSounds()

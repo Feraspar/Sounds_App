@@ -38,7 +38,7 @@ namespace Sounds_UWP
             InitializeDatabase();
         }
 
-        private void InitializeDatabase()
+        private void InitializeDatabase()   // Инициализация БД
         {
             var dbPath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "Sounds.db");
 
