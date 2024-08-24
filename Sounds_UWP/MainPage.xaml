@@ -3,11 +3,54 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Sounds_UWP"
+    xmlns:vm="using:Sounds_UWP.ViewModel"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    mc:Ignorable="d">
+    <Page.Background>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FF713E9E"/>
+            <GradientStop Color="#FFD8687E" Offset="1"/>
+        </LinearGradientBrush>
+    </Page.Background>
 
-    <Grid/>
+    <Page.DataContext>
+        <vm:MainPageViewModel />
+    </Page.DataContext>
+
+    <Page.Resources>
+        <DataTemplate x:Key="ListViewItem">
+            <Grid Width="320" Height="150" Margin="0, 10, 0, 10">
+                <Border CornerRadius="15" Opacity="1">
+                    <Image Source="{Binding BackgroundUri}" Stretch="Fill"/>
+                </Border>
+                <Border Height="50" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Background="Black" Opacity="0.65" CornerRadius="0, 0, 15, 15"/>
+                <TextBlock Text="{Binding Name}" FontSize="25" VerticalAlignment="Bottom" Foreground="AliceBlue" HorizontalAlignment="Center"/>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Border BorderBrush="White" BorderThickness="0, 0, 0, 1.52">
+                <TextBlock Text="Звуки" FontSize="50" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0, 0, 0, 5"/>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <ListView ItemsSource="{Binding Sounds}" ItemTemplate="{StaticResource ListViewItem}" SelectedItem="{Binding SelectedSound, Mode=TwoWay}" IsItemClickEnabled="True">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsWrapGrid Orientation="Horizontal" HorizontalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+            </ListView>
+        </Grid>
+    </Grid>
 </Page>
