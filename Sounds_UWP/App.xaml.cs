@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DataLibrary.Data;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,6 +9,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -20,8 +23,9 @@ namespace Sounds_UWP
     /// <summary>
     /// Обеспечивает зависящее от конкретного приложения поведение, дополняющее класс Application по умолчанию.
     /// </summary>
-    sealed partial class App : Application
+    public sealed partial class App : Application
     {
+        public static DatabaseContext DatabaseContext { get; private set; }
         /// <summary>
         /// Инициализирует одноэлементный объект приложения. Это первая выполняемая строка разрабатываемого
         /// кода, поэтому она является логическим эквивалентом main() или WinMain().
@@ -30,6 +34,25 @@ namespace Sounds_UWP
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+
+            InitializeDatabase();
+        }
+
+        private void InitializeDatabase()
+        {
+            var dbPath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "Sounds.db");
+
+            if (!File.Exists(dbPath))
+            {
+                var uri = new Uri("ms-appx:///Assets/Sounds.db");
+                var file = StorageFile.GetFileFromApplicationUriAsync(uri).AsTask().Result;
+                file.CopyAsync(ApplicationData.Current.LocalFolder).AsTask().Wait();
+            }
+
+            var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
+            optionsBuilder.UseSqlite($"Data Source={dbPath}");
+
+            DatabaseContext = new DatabaseContext(optionsBuilder.Options);
         }
 
         /// <summary>
