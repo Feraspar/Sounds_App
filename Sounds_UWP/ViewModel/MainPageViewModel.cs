@@ -57,6 +57,7 @@ namespace Sounds_UWP.ViewModel
 
                 SoundModel newSound = new SoundModel
                 {
+                    Id = sound.Id,
                     Name = sound.Name,
                     BackgroundUri = imageFile.Path,
                     SoundUri = soundFile.Path,

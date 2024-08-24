@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using DataLibrary.Data;
 using DataLibrary.Model;
+using Sounds_UWP.Model;
 using Sounds_UWP.Services;
 using System;
 using System.Collections.Generic;
@@ -30,10 +31,13 @@ namespace Sounds_UWP.ViewModel
         public ICommand SetTimerCommand { get; private set; }
         public ICommand ShowMelodiesPanelCommand { get; private set; }
         public ICommand AddExtraMelodyCommand {  get; private set; }
+        public ICommand ShowVolumeCommand {  get; private set; }
+        public ICommand DeleteSoundCommand { get; private set; }
         public ObservableCollection<SoundModel> AnimalsSounds { get; private set; }
         public ObservableCollection<SoundModel> InstrumentalSounds { get; private set; }
         public ObservableCollection<SoundModel> NatureSounds { get; private set; }
         public ObservableCollection<SoundModel> ExtraSounds { get; private set; }
+        public ObservableCollection<SoundVolumeModel> BackAndExtraSounds { get; private set; }
 
 
         public bool IsPlaying
@@ -71,9 +75,13 @@ namespace Sounds_UWP.ViewModel
             get => _isAddButtonVisible;
             set => SetProperty(ref _isAddButtonVisible, value);
         }
+        public bool IsPanelVolumeVisible
+        {
+            get => _isPanelVolumeVisible;
+            set => SetProperty(ref _isPanelVolumeVisible, value);
+        }
 
         private MediaPlayer _playerBack;
-        private List<MediaPlayer> _players;
         private bool _isPlaying;
         private int _extraSongsCounter;
 
@@ -87,6 +95,7 @@ namespace Sounds_UWP.ViewModel
 
         private bool _isPanelMelodiesVisible;
         private bool _isAddButtonVisible;
+        private bool _isPanelVolumeVisible;
 
         private StorageFolder _localFolder;
 
@@ -101,12 +110,19 @@ namespace Sounds_UWP.ViewModel
             SetTimerCommand = new RelayCommand<object>(SetTimer);
             ShowMelodiesPanelCommand = new RelayCommand(ShowMelodiesPanel);
             AddExtraMelodyCommand = new RelayCommand<SoundModel>(AddExtraMelody);
+            ShowVolumeCommand = new RelayCommand(ShowVolume);
+            DeleteSoundCommand = new RelayCommand<SoundVolumeModel>(DeleteSound);
 
             AnimalsSounds = new ObservableCollection<SoundModel>();
             InstrumentalSounds = new ObservableCollection<SoundModel>();
             NatureSounds = new ObservableCollection<SoundModel>();
-            _players = new List<MediaPlayer>();
             ExtraSounds = new ObservableCollection<SoundModel>();
+
+            var soundVolumeModel = new SoundVolumeModel(SelectedSound);
+            BackAndExtraSounds = new ObservableCollection<SoundVolumeModel>()
+            {
+                soundVolumeModel
+            };
 
             IsTimerButtonVisible = true;
             IsPanelTimerVisible = false;
@@ -117,7 +133,7 @@ namespace Sounds_UWP.ViewModel
 
             _localFolder = ApplicationData.Current.LocalFolder;
 
-            InitializeMediaPlayer(_playerBack, SelectedSound.SoundUri);
+            InitializeMediaPlayer(soundVolumeModel, SelectedSound.SoundUri);
             _ = InitializeMelodies();
         }
 
@@ -129,29 +145,29 @@ namespace Sounds_UWP.ViewModel
         }
         private void PlayPause()
         {
-            foreach (var player in _players)
+            foreach (var soundVolumeModel in BackAndExtraSounds)
             {
                 if (_isPlaying)
                 {
-                    player.Pause();
+                    soundVolumeModel.MediaPlayer.Pause();
                 }
                 else
                 {
-                    player.Play();
+                    soundVolumeModel.MediaPlayer.Play();
                 }
             }
             
             IsPlaying = !IsPlaying;
         }
 
-        private void InitializeMediaPlayer(MediaPlayer player, string uri)
+        private void InitializeMediaPlayer(SoundVolumeModel soundVolumeModel, string uri)
         {
-            player = new MediaPlayer();
+            MediaPlayer player = soundVolumeModel.MediaPlayer;
             player.Source = MediaSource.CreateFromUri(new Uri(uri));
             player.IsLoopingEnabled = true;
             IsPlaying = true;
             player.Play();
-            _players.Add(player);
+            soundVolumeModel.Volume = 5;
         }
 
         private void AddExtraMelody(SoundModel sound)
@@ -159,8 +175,9 @@ namespace Sounds_UWP.ViewModel
             _extraSongsCounter++;
             if (_extraSongsCounter <= 3)
             {
-                _players.Add(new MediaPlayer());
-                InitializeMediaPlayer(_players[_players.Count - 1], sound.SoundUri);
+                var soundVolumeModel = new SoundVolumeModel(sound);
+                InitializeMediaPlayer(soundVolumeModel, sound.SoundUri);
+                BackAndExtraSounds.Add(soundVolumeModel);
                 IsPanelMelodiesVisible = !IsPanelMelodiesVisible;
                 sound.IsEnabled = false;
                 ExtraSounds.Add(sound);
@@ -179,6 +196,7 @@ namespace Sounds_UWP.ViewModel
 
                 SoundModel newSound = new SoundModel
                 {
+                    Id = sound.Id,
                     Name = sound.Name,
                     BackgroundUri = imageFile.Path,
                     SoundUri = soundFile.Path,
@@ -213,13 +231,19 @@ namespace Sounds_UWP.ViewModel
 
         private void PlayerStop()
         {
-            foreach (var player  in _players)
+            foreach (var soundVolumeModel in BackAndExtraSounds)
             {
-                player.Pause();
-                player.PlaybackSession.Position = TimeSpan.Zero;
+                soundVolumeModel.MediaPlayer.Pause();
+                soundVolumeModel.MediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
             }
             
             IsPlaying = false;
+        }
+
+        private void DeleteSoundFromPlayer(SoundVolumeModel soundVolumeModel)
+        {
+            soundVolumeModel.MediaPlayer.Pause();
+            soundVolumeModel.MediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
         }
 
         private void ShowTimerPanel()
@@ -264,6 +288,34 @@ namespace Sounds_UWP.ViewModel
                 IsAddButtonVisible = !IsAddButtonVisible;
             }
             IsPanelMelodiesVisible = !IsPanelMelodiesVisible;
+        }
+
+        private void ShowVolume()
+        {
+            IsPanelVolumeVisible = !IsPanelVolumeVisible;
+        }
+
+        private void DeleteSound(SoundVolumeModel soundVolumeModel)
+        {
+            _extraSongsCounter--;
+            if (IsAddButtonVisible == false)
+                IsAddButtonVisible = !IsAddButtonVisible;
+
+            SoundModel soundToRemove = null;
+
+            foreach (var sound in ExtraSounds)
+            {
+                if (soundVolumeModel.SoundId == sound.Id)
+                {
+                    sound.IsEnabled = true;
+                    soundToRemove = sound;
+                    break;
+                }
+            }
+
+            ExtraSounds.Remove(soundToRemove);
+            BackAndExtraSounds.Remove(soundVolumeModel);
+            DeleteSoundFromPlayer(soundVolumeModel);
         }
     }
 }

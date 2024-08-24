@@ -39,9 +39,29 @@
             </Setter>
         </Style>
 
+        <DataTemplate x:Key="FirstItemTemplate">
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <Image Width="50" Height="30" Source="{Binding BackgroundUri}" Margin="0, 0, 10, 0"/>
+                <Slider Minimum="0" Maximum="10" StepFrequency="1" Value="{Binding Volume, Mode=TwoWay}" Width="100" Margin="5"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="RegularItemTemplate">
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <Image Width="50" Height="30" Source="{Binding BackgroundUri}" Margin="0, 0, 10, 0"/>
+                <Slider Minimum="0" Maximum="10" StepFrequency="1" Value="{Binding Volume, Mode=TwoWay}" Width="100" Margin="5"/>
+                <Button Command="{Binding ElementName=RootPage, Path=DataContext.DeleteSoundCommand}" CommandParameter="{Binding}" Width="30" Height="30" Margin="10, 0, 0, 0" Style="{StaticResource NoHoverEffectButtonStyle}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="/Assets/delete.png"/>
+                    </Button.Background>
+                </Button>
+            </StackPanel>
+        </DataTemplate>
+
         <converter:ButtonImageConverter x:Key="ButtonImageConverter" />
         <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converter:BooleanToDoubleConverter x:Key="BooleanToDoubleConverter" />
+        <converter:ItemTemplateSelector x:Key="ItemTemplateSelector" FirstItemTemplate="{StaticResource FirstItemTemplate}" RegularItemTemplate="{StaticResource RegularItemTemplate}" />
     </Page.Resources>
 
     <Grid>
@@ -85,7 +105,7 @@
                             <ItemsControl ItemsSource="{Binding ExtraSounds}" Grid.Column="0" HorizontalAlignment="Center" Margin="0, 20, 0, 0">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Button Width="80" Height="80" HorizontalAlignment="Center" BorderBrush="{x:Null}" Style="{StaticResource NoHoverEffectButtonStyle}">
+                                        <Button Command="{Binding ElementName=RootPage, Path=DataContext.ShowVolumeCommand}" Width="80" Height="80" HorizontalAlignment="Center" BorderBrush="{x:Null}" Style="{StaticResource NoHoverEffectButtonStyle}">
                                             <Button.Background>
                                                 <ImageBrush ImageSource="{Binding BackgroundUri}"/>
                                             </Button.Background>
@@ -198,6 +218,23 @@
                         </ListView.ItemTemplate>
                     </ListView>
                     <Button Command="{Binding ShowMelodiesPanelCommand}" Width="30" Height="30" HorizontalAlignment="Center" Margin="0, 20, 0, 0" BorderBrush="{x:Null}" Style="{StaticResource NoHoverEffectButtonStyle}">
+                        <Button.Background>
+                            <ImageBrush ImageSource="/Assets/cancel.png"/>
+                        </Button.Background>
+                    </Button>
+                </StackPanel>
+            </Viewbox>
+
+            <Viewbox Grid.ColumnSpan="2" Grid.RowSpan="3" MaxWidth="1600">
+                <StackPanel Width="500" Height="300" Margin="30" HorizontalAlignment="Center" Background="AliceBlue" CornerRadius="10" Visibility="{Binding IsPanelVolumeVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ItemsControl ItemsSource="{Binding BackAndExtraSounds}" ItemTemplateSelector="{StaticResource ItemTemplateSelector}" HorizontalAlignment="Center" Margin="0, 20, 0, 0">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                    <Button Command="{Binding ShowVolumeCommand}" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0, 30, 0, 0" BorderBrush="{x:Null}" Style="{StaticResource NoHoverEffectButtonStyle}">
                         <Button.Background>
                             <ImageBrush ImageSource="/Assets/cancel.png"/>
                         </Button.Background>
